@@ -1,0 +1,2 @@
+# kizaikannri
+FlaskとSQLiteで開発した機材貸出管理システム
