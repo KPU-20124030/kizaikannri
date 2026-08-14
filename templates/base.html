@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}機材管理{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <a class="logo" href="{{ url_for('index') if g.user else url_for('login') }}">
+            機材管理
+        </a>
+
+        {% if g.user %}
+            <nav class="nav-links" aria-label="メインメニュー">
+                <a href="{{ url_for('index') }}">ホーム</a>
+
+                {% if g.user.role == "student" %}
+                    <a href="{{ url_for('my_requests') }}">自分の申請</a>
+                {% else %}
+                    <a href="{{ url_for('admin_requests') }}">申請管理</a>
+                    <a href="{{ url_for('history') }}">貸出履歴</a>
+                    <a href="{{ url_for('admin') }}">機材管理</a>
+                {% endif %}
+            </nav>
+
+            <div class="user-menu">
+                <span>
+                    {{ g.user.display_name }}
+                    <small>（{{ "管理者" if g.user.role == "admin" else "学生" }}）</small>
+                </span>
+                <form method="POST" action="{{ url_for('logout') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button class="link-button" type="submit">ログアウト</button>
+                </form>
+            </div>
+        {% endif %}
+    </header>
+
+    <main class="container {% block container_class %}{% endblock %}">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="message-list" aria-live="polite">
+                    {% for category, message in messages %}
+                        <p class="message {{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

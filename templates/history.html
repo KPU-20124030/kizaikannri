@@ -1,100 +1,51 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>貸出履歴</title>
+{% block title %}貸出履歴 | 機材管理{% endblock %}
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
-</head>
+{% block content %}
+    <section class="page-header">
+        <p class="sub-title">管理者メニュー</p>
+        <h1>貸出履歴</h1>
+        <p>承認後に行われた機材の貸出・返却状況を確認できます</p>
+    </section>
 
-<body>
-    <header class="header">
-        <div class="logo">機材管理システム</div>
-
-        <nav class="nav-links">
-            <a href="{{ url_for('index') }}">ホーム</a>
-            <a href="{{ url_for('history') }}">貸出履歴</a>
-            <a href="{{ url_for('admin') }}">機材管理</a>
-        </nav>
-    </header>
-
-    <main class="container">
-        <section class="page-header">
-            <p class="sub-title">貸出管理</p>
-
-            <h1>貸出履歴</h1>
-
-            <p>
-                これまでの機材の貸出・返却状況を確認できます。
-            </p>
-        </section>
-
-        <section class="history-section">
-            {% if loan_history %}
-                <div class="table-wrapper">
-                    <table class="history-table">
-                        <thead>
+    <section class="section-block">
+        {% if loan_history %}
+            <div class="table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>番号</th>
+                            <th>機材</th>
+                            <th>利用者</th>
+                            <th>貸出日時</th>
+                            <th>返却日時</th>
+                            <th>状態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in loan_history %}
                             <tr>
-                                <th>番号</th>
-                                <th>機材</th>
-                                <th>利用者</th>
-                                <th>貸出日時</th>
-                                <th>返却日時</th>
-                                <th>状態</th>
+                                <td>{{ loan.id }}</td>
+                                <td>
+                                    <strong>{{ loan.equipment_name }}</strong><br>
+                                    <small>{{ loan.category }}</small>
+                                </td>
+                                <td>{{ loan.borrower }}</td>
+                                <td>{{ loan.borrowed_at }}</td>
+                                <td>{{ loan.returned_at or "未返却" }}</td>
+                                <td>
+                                    <span class="badge {{ 'status-loaning' if loan.status == '貸出中' else 'status-returned' }}">
+                                        {{ loan.status }}
+                                    </span>
+                                </td>
                             </tr>
-                        </thead>
-
-                        <tbody>
-                            {% for loan in loan_history %}
-                                <tr>
-                                    <td>{{ loan.id }}</td>
-
-                                    <td>
-                                        <strong>
-                                            {{ loan.equipment_name }}
-                                        </strong>
-                                        <br>
-                                        <small>
-                                            {{ loan.category }}
-                                        </small>
-                                    </td>
-
-                                    <td>{{ loan.borrower }}</td>
-                                    <td>{{ loan.borrowed_at }}</td>
-
-                                    <td>
-                                        {% if loan.returned_at %}
-                                            {{ loan.returned_at }}
-                                        {% else %}
-                                            未返却
-                                        {% endif %}
-                                    </td>
-
-                                    <td>
-                                        {% if loan.status == "貸出中" %}
-                                            <span class="history-status loaning">
-                                                {{ loan.status }}
-                                            </span>
-                                        {% else %}
-                                            <span class="history-status returned">
-                                                {{ loan.status }}
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <p class="empty-history">
-                    貸出履歴はまだありません。
-                </p>
-            {% endif %}
-        </section>
-    </main>
-</body>
-</html>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-state">貸出履歴はまだありません</p>
+        {% endif %}
+    </section>
+{% endblock %}

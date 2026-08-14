@@ -1,127 +1,82 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>機材管理システム</title>
+{% block title %}機材一覧 | 機材管理{% endblock %}
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
-</head>
+{% block content %}
+    <section class="hero">
+        <p class="sub-title">学内機材貸出管理アプリ</p>
+        <h1>必要な機材を簡単に申請</h1>
+        {% if g.user.role == "student" %}
+            <p>利用したい機材を選んで申請し、管理者の承認を待ちます</p>
+        {% else %}
+            <p>機材の状態を確認できます。申請の処理は「申請管理」から行います。</p>
+        {% endif %}
+    </section>
 
-<body>
-    <header class="header">
-        <div class="logo">機材管理システム</div>
-
-        <nav class="nav-links">
-            <a href="{{ url_for('index') }}">ホーム</a>
-            <a href="{{ url_for('history') }}">貸出履歴</a>
-            <a href="{{ url_for('admin') }}">機材管理</a>
-        </nav>
-    </header>
-
-    <main class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="message-list">
-                    {% for category, message in messages %}
-                        <p class="message {{ category }}">
-                            {{ message }}
-                        </p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <section class="hero">
-            <p class="sub-title">機材貸出管理アプリ</p>
-
-            <h1>必要な機材を、かんたんに借りる。</h1>
-
-            <p>
-                機材の検索・貸出・返却を管理できます。
-            </p>
-        </section>
-
-        <section class="equipment-section">
+    <section class="section-block">
+        <div class="section-heading">
             <h2>機材一覧</h2>
+            <span class="role-label">{{ "管理者画面" if g.user.role == "admin" else "学生画面" }}</span>
+        </div>
 
-            <form class="search-form"
-                  method="GET"
-                  action="{{ url_for('index') }}">
+        <form class="search-form" method="GET" action="{{ url_for('index') }}">
+            <input
+                class="search-input"
+                type="search"
+                name="keyword"
+                value="{{ keyword }}"
+                placeholder="機材名またはカテゴリを入力"
+            >
+            <button class="primary-button" type="submit">検索</button>
+            {% if keyword %}
+                <a class="secondary-button" href="{{ url_for('index') }}">クリア</a>
+            {% endif %}
+        </form>
 
-                <input class="search-input"
-                       type="text"
-                       name="keyword"
-                       value="{{ keyword }}"
-                       placeholder="機材名またはカテゴリを入力">
+        {% if equipment_list %}
+            <div class="equipment-grid">
+                {% for equipment in equipment_list %}
+                    <article class="equipment-card">
+                        <p class="category">{{ equipment.category }}</p>
+                        <h3>{{ equipment.name }}</h3>
 
-                <button class="search-button" type="submit">
-                    検索
-                </button>
+                        <p>
+                            <span class="badge
+                                {% if equipment.status == '貸出可能' %}status-available
+                                {% elif equipment.status == '申請中' %}status-pending
+                                {% else %}status-loaning{% endif %}">
+                                {{ equipment.status }}
+                            </span>
+                        </p>
 
-                {% if keyword %}
-                    <a class="clear-button"
-                       href="{{ url_for('index') }}">
-                        クリア
-                    </a>
-                {% endif %}
-            </form>
-
-            {% if equipment_list %}
-                <div class="equipment-grid">
-                    {% for equipment in equipment_list %}
-                        <article class="equipment-card">
-                            <p class="category">
-                                {{ equipment.category }}
-                            </p>
-
-                            <h3>{{ equipment.name }}</h3>
-
-                            {% if equipment.status == "貸出可能" %}
-                                <p class="status available">
-                                    {{ equipment.status }}
+                        {% if g.user.role == "student" %}
+                            {% if equipment.my_request_status %}
+                                <p class="card-note">
+                                    あなたの状態：{{ equipment.my_request_status }}
                                 </p>
-
-                                <form method="POST"
-                                      action="{{ url_for('borrow', equipment_id=equipment.id) }}">
-
-                                    <input class="borrower-input"
-                                           type="text"
-                                           name="borrower"
-                                           maxlength="30"
-                                           placeholder="利用者名を入力"
-                                           required>
-
-                                    <button class="borrow-button"
-                                            type="submit">
-                                        借りる
+                                <a class="secondary-button full-button" href="{{ url_for('my_requests') }}">
+                                    申請を確認
+                                </a>
+                            {% elif equipment.status == "貸出可能" %}
+                                <form method="POST" action="{{ url_for('request_loan', equipment_id=equipment.id) }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                    <button class="primary-button full-button" type="submit">
+                                        貸出を申請する
                                     </button>
                                 </form>
                             {% else %}
-                                <p class="status unavailable">
-                                    {{ equipment.status }}
-                                </p>
-
-                                <form method="POST"
-                                      action="{{ url_for('return_equipment', equipment_id=equipment.id) }}">
-
-                                    <button class="return-button"
-                                            type="submit">
-                                        返却する
-                                    </button>
-                                </form>
+                                <p class="card-note">現在は申請できません。</p>
                             {% endif %}
-                        </article>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="no-results">
-                    該当する機材が見つかりませんでした。
-                </p>
-            {% endif %}
-        </section>
-    </main>
-</body>
-</html>
+                        {% else %}
+                            <a class="secondary-button full-button" href="{{ url_for('admin_requests') }}">
+                                申請管理を開く
+                            </a>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">該当する機材が見つかりませんでした</p>
+        {% endif %}
+    </section>
+{% endblock %}

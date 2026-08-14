@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}ログイン | 機材管理{% endblock %}
+{% block container_class %}login-container{% endblock %}
+
+{% block content %}
+    <section class="login-card">
+        <p class="sub-title">学内機材貸出管理アプリ</p>
+        <h1>ログイン</h1>
+        <p class="muted">学生または管理者のアカウントでログイン</p>
+
+        <form class="stack-form" method="POST" action="{{ url_for('login') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="form-group">
+                <label for="username">ユーザー名</label>
+                <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    value="{{ username }}"
+                    autocomplete="username"
+                    required
+                    autofocus
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <button class="primary-button" type="submit">ログイン</button>
+        </form>
+    </section>
+{% endblock %}

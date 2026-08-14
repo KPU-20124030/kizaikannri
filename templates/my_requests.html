@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}自分の申請 | 機材管理{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <p class="sub-title">学生メニュー</p>
+        <h1>自分の貸出申請</h1>
+        <p>申請結果や貸出状況を確認し、利用後に返却処理を行えます</p>
+    </section>
+
+    <section class="section-block">
+        {% if request_list %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>番号</th>
+                            <th>機材</th>
+                            <th>申請日時</th>
+                            <th>処理日時</th>
+                            <th>状態</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in request_list %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>
+                                    <strong>{{ item.equipment_name }}</strong><br>
+                                    <small>{{ item.category }}</small>
+                                </td>
+                                <td>{{ item.requested_at }}</td>
+                                <td>{{ item.decided_at or "未処理" }}</td>
+                                <td>
+                                    <span class="badge
+                                        {% if item.status == '承認待ち' %}status-pending
+                                        {% elif item.status == '貸出中' %}status-loaning
+                                        {% elif item.status == '却下' %}status-rejected
+                                        {% else %}status-returned{% endif %}">
+                                        {{ item.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if item.status == "貸出中" %}
+                                        <form method="POST" action="{{ url_for('return_requested_equipment', request_id=item.id) }}">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <button class="return-button" type="submit">返却する</button>
+                                        </form>
+                                    {% else %}
+                                        <span class="muted">－</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-state">貸出申請はまだありません</p>
+        {% endif %}
+    </section>
+{% endblock %}

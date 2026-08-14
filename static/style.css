@@ -4,9 +4,12 @@
     --bg: #f2f7f9;
     --text: #24313b;
     --gray: #687b83;
+    --border: #d7e1e4;
     --green: #16834b;
-    --red: #d64b50;
-    --orange: #cf7433;
+    --red: #c74348;
+    --orange: #c96d2d;
+    --yellow: #9a6a0b;
+    --shadow: 0 5px 18px rgba(25, 55, 65, 0.08);
 }
 
 * {
@@ -27,76 +30,104 @@ input {
     font: inherit;
 }
 
-/* ヘッダー */
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
 .header {
     position: sticky;
     top: 0;
     z-index: 10;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 18px 8%;
+    gap: 24px;
+    padding: 15px 6%;
     color: white;
     background: var(--main);
+    box-shadow: 0 2px 10px rgba(20, 60, 70, 0.12);
 }
 
 .logo {
+    color: white;
     font-size: 24px;
     font-weight: bold;
+    letter-spacing: 1px;
+    text-decoration: none;
 }
 
 .nav-links {
     display: flex;
-    gap: 15px;
+    flex: 1;
+    gap: 6px;
 }
 
-.nav-links a {
-    padding: 6px 8px;
+.nav-links a,
+.link-button {
+    padding: 6px 9px;
+    border: 0;
+    border-radius: 6px;
     color: white;
+    background: transparent;
     text-decoration: none;
-    border-radius: 5px;
+    cursor: pointer;
 }
 
-.nav-links a:hover {
-    background: rgba(255, 255, 255, 0.15);
+.nav-links a:hover,
+.link-button:hover {
+    background: rgba(255, 255, 255, 0.16);
 }
 
-/* 共通レイアウト */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.user-menu form,
+td form {
+    margin: 0;
+}
+
 .container {
-    width: 84%;
+    width: 88%;
     max-width: 1200px;
-    margin: 55px auto;
+    margin: 48px auto;
 }
 
 .hero,
 .page-header,
-.equipment-card,
-.admin-panel,
-.table-wrapper {
+.login-card,
+.panel,
+.table-wrapper,
+.empty-state {
     background: white;
     border-radius: 14px;
-    box-shadow: 0 5px 18px rgba(25, 55, 65, 0.08);
+    box-shadow: var(--shadow);
 }
 
 .hero {
-    padding: 55px;
-}
-
-.page-header {
-    padding: 35px 40px;
+    padding: 48px;
+    background: linear-gradient(135deg, #fff 70%, #eaf7f8);
 }
 
 .hero h1,
-.page-header h1 {
-    margin: 8px 0 15px;
+.page-header h1,
+.login-card h1 {
+    margin: 7px 0 12px;
 }
 
 .hero h1 {
-    font-size: 38px;
+    font-size: 36px;
+}
+
+.page-header {
+    padding: 32px 38px;
 }
 
 .page-header h1 {
-    font-size: 34px;
+    font-size: 32px;
 }
 
 .sub-title {
@@ -105,9 +136,41 @@ input {
     font-weight: bold;
 }
 
-/* メッセージ */
+.muted,
+small,
+.category,
+.card-note {
+    color: var(--gray);
+}
+
+.section-block,
+.admin-layout {
+    margin-top: 32px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.role-label {
+    padding: 5px 11px;
+    border-radius: 20px;
+    color: var(--main-dark);
+    background: #dff3f5;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.message-list {
+    margin-bottom: 18px;
+}
+
 .message {
-    padding: 13px 17px;
+    margin: 0 0 9px;
+    padding: 12px 16px;
     border-radius: 8px;
     font-weight: bold;
 }
@@ -122,17 +185,14 @@ input {
     background: #fde2e2;
 }
 
-/* 検索 */
-.equipment-section,
-.history-section,
-.admin-layout {
-    margin-top: 35px;
+.search-form,
+.action-group {
+    display: flex;
+    gap: 9px;
 }
 
 .search-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
 }
 
 .search-input {
@@ -141,7 +201,7 @@ input {
 
 input {
     min-width: 0;
-    padding: 11px 13px;
+    padding: 10px 12px;
     border: 1px solid #c7d2d6;
     border-radius: 7px;
     background: white;
@@ -152,10 +212,15 @@ input:focus {
     outline: 2px solid rgba(27, 132, 147, 0.15);
 }
 
-/* ボタン */
-button,
-.clear-button {
-    padding: 11px 20px;
+.primary-button,
+.secondary-button,
+.approve-button,
+.danger-button,
+.return-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 17px;
     border: 0;
     border-radius: 7px;
     color: white;
@@ -165,57 +230,64 @@ button,
     cursor: pointer;
 }
 
-.search-button,
-.borrow-button,
-.register-button {
+.primary-button,
+.approve-button {
     background: var(--main);
 }
 
-.search-button:hover,
-.borrow-button:hover,
-.register-button:hover {
+.primary-button:hover,
+.approve-button:hover {
     background: var(--main-dark);
 }
 
-.clear-button {
-    background: #687b83;
+.secondary-button {
+    background: var(--gray);
+}
+
+.secondary-button:hover {
+    background: #52646b;
+}
+
+.danger-button {
+    background: var(--red);
+}
+
+.danger-button:hover {
+    background: #a93237;
 }
 
 .return-button {
     background: var(--orange);
 }
 
-.delete-button,
-.inventory-table button {
-    background: var(--red);
+.return-button:hover {
+    background: #aa5820;
 }
 
-.borrow-button,
-.return-button,
-.register-button {
+.full-button {
     width: 100%;
+    margin-top: auto;
 }
 
-.borrow-button,
-.return-button {
-    margin-top: 10px;
-}
-
-/* 機材カード */
 .equipment-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+    gap: 18px;
 }
 
 .equipment-card {
     display: flex;
     flex-direction: column;
-    padding: 24px;
+    min-height: 245px;
+    padding: 22px;
+    border: 1px solid #e5ecee;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
 .equipment-card h3 {
-    margin: 7px 0 18px;
+    margin: 5px 0 12px;
     font-size: 21px;
 }
 
@@ -223,39 +295,48 @@ button,
     margin-top: auto;
 }
 
-.category {
-    margin: 0;
-    color: var(--gray);
+.category,
+.card-note {
+    margin: 0 0 8px;
 }
 
-.status {
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 13px;
     font-weight: bold;
+    white-space: nowrap;
 }
 
-.available {
-    color: var(--green);
+.status-available,
+.status-returned {
+    color: #12653c;
+    background: #dff5e8;
 }
 
-.unavailable {
-    color: var(--red);
+.status-pending {
+    color: #76510a;
+    background: #fff0bd;
 }
 
-.borrower-input,
-.admin-input {
-    width: 100%;
+.status-loaning {
+    color: #9a451d;
+    background: #ffe4d5;
 }
 
-.no-results,
-.empty-history {
-    padding: 30px;
-    text-align: center;
-    background: white;
-    border-radius: 10px;
+.status-rejected {
+    color: #982828;
+    background: #fde2e2;
 }
 
-/* 表 */
 .table-wrapper {
     overflow-x: auto;
+}
+
+.flat-table {
+    border-radius: 8px;
+    box-shadow: none;
 }
 
 table {
@@ -265,88 +346,91 @@ table {
 
 th,
 td {
-    padding: 15px;
+    padding: 14px;
     border-bottom: 1px solid #e1e8eb;
     text-align: left;
+    vertical-align: middle;
 }
 
 th {
     color: white;
     background: var(--main);
+    white-space: nowrap;
 }
 
 tbody tr:hover {
     background: #f4fafb;
 }
 
-small {
-    color: var(--gray);
+.empty-state {
+    padding: 28px;
+    text-align: center;
 }
 
-.equipment-badge,
-.history-status {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: bold;
-    white-space: nowrap;
-}
-
-.available-badge,
-.history-status.returned {
-    color: #12653c;
-    background: #dff5e8;
-}
-
-.unavailable-badge,
-.history-status.loaning {
-    color: #a34226;
-    background: #ffe4d5;
-}
-
-.inventory-table form {
-    margin: 0;
-}
-
-/* 管理画面 */
 .admin-layout {
     display: grid;
-    grid-template-columns: 0.8fr 1.4fr;
-    gap: 24px;
+    grid-template-columns: minmax(250px, 0.7fr) minmax(520px, 1.5fr);
+    gap: 22px;
     align-items: start;
 }
 
-.admin-panel {
-    padding: 28px;
+.panel {
+    padding: 25px;
 }
 
-.admin-panel h2 {
+.panel h2 {
     margin-top: 0;
 }
 
-.admin-form,
+.stack-form,
 .form-group {
     display: flex;
     flex-direction: column;
 }
 
-.admin-form {
-    gap: 20px;
+.stack-form {
+    gap: 18px;
 }
 
 .form-group {
-    gap: 7px;
+    gap: 6px;
 }
 
 .form-group label {
     font-weight: bold;
 }
 
-/* スマートフォン対応 */
-@media (max-width: 900px) {
-    .container {
-        width: 90%;
+.login-container {
+    display: grid;
+    min-height: calc(100vh - 190px);
+    place-items: center;
+}
+
+.login-card {
+    width: min(430px, 100%);
+    padding: 38px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline: 3px solid rgba(27, 132, 147, 0.3);
+    outline-offset: 2px;
+}
+
+@media (max-width: 950px) {
+    .header {
+        flex-wrap: wrap;
+    }
+
+    .nav-links {
+        order: 3;
+        flex-basis: 100%;
+        flex-wrap: wrap;
+    }
+
+    .user-menu {
+        margin-left: auto;
     }
 
     .admin-layout {
@@ -357,35 +441,49 @@ small {
 @media (max-width: 640px) {
     .header {
         position: static;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px 5%;
+        gap: 10px;
+        padding: 13px 5%;
+    }
+
+    .user-menu {
+        width: 100%;
+        justify-content: space-between;
+        order: 2;
     }
 
     .nav-links {
-        flex-wrap: wrap;
+        order: 3;
+    }
+
+    .nav-links a {
+        font-size: 14px;
     }
 
     .container {
         width: 92%;
-        margin: 30px auto;
+        margin: 28px auto;
     }
 
     .hero,
-    .page-header {
-        padding: 30px 24px;
+    .page-header,
+    .login-card {
+        padding: 27px 22px;
     }
 
     .hero h1 {
-        font-size: 28px;
+        font-size: 27px;
+    }
+
+    .page-header h1 {
+        font-size: 27px;
     }
 
     .search-form {
         flex-direction: column;
     }
 
-    .search-button,
-    .clear-button {
+    .search-form .primary-button,
+    .search-form .secondary-button {
         width: 100%;
     }
 
@@ -393,11 +491,11 @@ small {
         grid-template-columns: 1fr;
     }
 
-    .history-table {
-        min-width: 780px;
+    table {
+        min-width: 720px;
     }
 
     .inventory-table {
-        min-width: 600px;
+        min-width: 640px;
     }
 }
